@@ -24,7 +24,7 @@ class HomeScreenActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 HomeScreen {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(Intent(this, SessionConfigurationActivity::class.java))
                 }
             }
         }

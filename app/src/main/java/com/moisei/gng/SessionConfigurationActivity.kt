@@ -54,7 +54,7 @@ fun SessionConfiguration() {
         Spacer(Modifier.height(16.dp))
         Button(
             onClick = {
-                // TODO: Save configuration and start the session
+                // TODO: start MainActiviy
             },
             modifier = Modifier.align(Alignment.End)
         ) {
