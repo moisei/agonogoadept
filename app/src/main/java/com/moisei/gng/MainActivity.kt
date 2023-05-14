@@ -28,10 +28,30 @@ import androidx.compose.ui.unit.dp
 class MainActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var goState: MutableState<Color>
+    private var noGoStateTime = 5000L
+    private var goStateColor = Color.Green
+    private var noGoStateColor = Color.Red
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        goState = mutableStateOf(Color.Green)
+
+        intent?.extras?.let {
+            noGoStateTime = 1000*(it.getString("NO_GO_STATE_TIME")?.toLongOrNull() ?: 5L)
+            goStateColor = when (it.getString("GO_STATE_COLOR")?.lowercase()) {
+                "red" -> Color.Red
+                "blue" -> Color.Blue
+                // Add other colors if needed
+                else -> Color.Green
+            }
+            noGoStateColor = when (it.getString("NO_GO_STATE_COLOR")?.lowercase()) {
+                "red" -> Color.Red
+                "blue" -> Color.Blue
+                // Add other colors if needed
+                else -> Color.Green
+            }
+        }
+
+        goState = mutableStateOf(goStateColor)
 
         setContent {
             AGoNoGoAdeptTheme {
@@ -59,17 +79,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
     }
 
     private fun changeToNoGoState() {
-        goState.value = Color.Red
+        goState.value = noGoStateColor
         handler.postDelayed({
             changeToGoState()
-        }, 5000) // Change to GO state after 5 seconds
+        }, noGoStateTime)
     }
 
     private fun changeToGoState() {
-        goState.value = Color.Green
+        goState.value = goStateColor
     }
 }
