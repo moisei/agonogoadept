@@ -11,10 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
@@ -59,8 +61,9 @@ fun SessionConfiguration() {
         Button(
             onClick = {
                 val intent = Intent(context, MainActivity::class.java).apply {
-                    putExtra("NO_GO_STATE_TIME", noGoStateTime.value)
-                    putExtra("GO_STATE_COLOR", goStateColor.value)
+                    ConfigurationHolder.noGoStateTimeMillis = 1000 * (noGoStateTime.value.toLongOrNull() ?: 5L)
+                    ConfigurationHolder.goStateColor = string2color(goStateColor)
+                    ConfigurationHolder.noGoStateColor = string2color(noGoStateColor)
                     putExtra("NO_GO_STATE_COLOR", noGoStateColor.value)
                 }
                 context.startActivity(intent)
@@ -71,3 +74,11 @@ fun SessionConfiguration() {
         }
     }
 }
+
+private fun string2color(goStateColor: MutableState<String>) =
+    when (goStateColor.value.lowercase()) {
+        "red" -> Color.Red
+        "blue" -> Color.Blue
+        // Add other colors if needed
+        else -> Color.Green
+    }

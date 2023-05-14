@@ -27,31 +27,12 @@ import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var goState: MutableState<Color>
-    private var noGoStateTime = 5000L
-    private var goStateColor = Color.Green
-    private var noGoStateColor = Color.Red
+    private lateinit var gngState: MutableState<Color>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        intent?.extras?.let {
-            noGoStateTime = 1000*(it.getString("NO_GO_STATE_TIME")?.toLongOrNull() ?: 5L)
-            goStateColor = when (it.getString("GO_STATE_COLOR")?.lowercase()) {
-                "red" -> Color.Red
-                "blue" -> Color.Blue
-                // Add other colors if needed
-                else -> Color.Green
-            }
-            noGoStateColor = when (it.getString("NO_GO_STATE_COLOR")?.lowercase()) {
-                "red" -> Color.Red
-                "blue" -> Color.Blue
-                // Add other colors if needed
-                else -> Color.Green
-            }
-        }
-
-        goState = mutableStateOf(goStateColor)
+        gngState = mutableStateOf(ConfigurationHolder.goStateColor)
 
         setContent {
             AGoNoGoAdeptTheme {
@@ -60,15 +41,21 @@ class MainActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(color = goState.value)
+                                .background(color = gngState.value)
                                 .clickable {
                                     changeToNoGoState()
                                 }
                         )
                     }
                     Button(
-//                        onClick = { finish() }, // or startActivity(Intent(this, HomeScreenActivity::class.java))
-                        onClick = { startActivity(Intent(this@MainActivity, HomeScreenActivity::class.java)) },
+                        onClick = {
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    HomeScreenActivity::class.java
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .fillMaxWidth()
@@ -82,13 +69,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun changeToNoGoState() {
-        goState.value = noGoStateColor
+        gngState.value = ConfigurationHolder.noGoStateColor
         handler.postDelayed({
             changeToGoState()
-        }, noGoStateTime)
+        }, ConfigurationHolder.noGoStateTimeMillis)
     }
 
     private fun changeToGoState() {
-        goState.value = goStateColor
+        gngState.value = ConfigurationHolder.goStateColor
     }
 }
