@@ -1,4 +1,6 @@
 package com.moisei.gng
+
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 class SessionConfigurationActivity : ComponentActivity() {
@@ -29,6 +32,7 @@ class SessionConfigurationActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionConfiguration() {
+    val context = LocalContext.current
     Column(modifier = Modifier.padding(16.dp)) {
         val noGoStateTime = remember { mutableStateOf("5") }
         val goStateColor = remember { mutableStateOf("Green") }
@@ -54,7 +58,12 @@ fun SessionConfiguration() {
         Spacer(Modifier.height(16.dp))
         Button(
             onClick = {
-                // TODO: start MainActiviy
+                val intent = Intent(context, MainActivity::class.java).apply {
+                    putExtra("NO_GO_STATE_TIME", noGoStateTime.value)
+                    putExtra("GO_STATE_COLOR", goStateColor.value)
+                    putExtra("NO_GO_STATE_COLOR", noGoStateColor.value)
+                }
+                context.startActivity(intent)
             },
             modifier = Modifier.align(Alignment.End)
         ) {
